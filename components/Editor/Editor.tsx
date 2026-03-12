@@ -20,6 +20,14 @@ const theme: EditorThemeClasses = {
     italic: "italic",
     code: "text-black p-0.5 bg-gray-100 border border-gray-300 rounded",
   },
+  heading: {
+    h1: 'editor-h1',
+    h2: 'editor-h2',
+    h3: 'editor-h3',
+    h4: 'editor-h4',
+    h5: 'editor-h5',
+    h6: 'editor-h6',
+  },
 };
 
 interface RichTextEditorProps {

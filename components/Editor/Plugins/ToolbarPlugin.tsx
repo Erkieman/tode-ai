@@ -20,7 +20,7 @@ import {
 import { useEffect, useState } from "react";
 import { mergeRegister } from "@lexical/utils";
 import { HeadingTagType, $createHeadingNode } from "@lexical/rich-text";
-import { $wrapNodes } from "@lexical/selection";
+import { $setBlocksType } from "@lexical/selection";
 import { useKeyBindings } from "../Hooks/useKeyBindings";
 
 
@@ -155,40 +155,31 @@ export default function ToolbarPlugin() {
 
   useKeyBindings({ onAction });
 
-  const getSelectedBtnProps = (isSelected: boolean) =>
-    isSelected
-      ? {
-          colorScheme: "blue",
-          variant: "solid",
-        }
-      : {};
-
   const updateHeading = (heading: HeadingTagType) => {
+    console.log("current editor state", editor);
+
     editor.update(() => {
       const selection = $getSelection();
-
       if ($isRangeSelection(selection)) {
-        $wrapNodes(selection, () => $createHeadingNode(heading));
+        $setBlocksType(selection, () => $createHeadingNode(heading));
       }
     });
+
   };
 
   return (
     <div className="flex">
         <div className="flex items-center border border-gray-300 rounded px-1 py-1">
+          
         <select
-        className=""
-        onChange={(e) => {
-            updateHeading(e.target.value as HeadingTagType);
-        }}
-        defaultValue=""
+          onChange={(e) => updateHeading(e.target.value as HeadingTagType)}
         >
-        <option value="" disabled>Select Heading</option>
-        {HEADINGS.map((heading) => (
-            <option key={heading} value={heading}>{heading}</option>
-        ))}
+          {HEADINGS.map((heading) => (
+          <option key={heading}>{heading}</option>
+          ))}
         </select>
-            {RICH_TEXT_OPTIONS.map(({ id, label, icon, fontSize}, index) =>
+
+            {RICH_TEXT_OPTIONS.map(({ id, label, icon}, index) =>
             id === RichTextAction.Divider ? (
                 <div key={`divider-${index}`} className="w-px h-4 bg-gray-300 mx-1" />
             ) : (
@@ -199,7 +190,6 @@ export default function ToolbarPlugin() {
                 disabled={disableMap[id]}
                 onClick={() => onAction(id)}
                 className={`
-                    p-1 text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed
                     ${selectionMap[id] ? 'bg-gray-200' : ''}
                 `}
                 >
